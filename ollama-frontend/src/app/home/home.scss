@@ -1,0 +1,71 @@
+.home-container {
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+height: 100vh;
+text-align: center;
+background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+font-family: 'Poppins', sans-serif;
+color: #f5f5f5;
+padding: 2rem;
+
+h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #00f5ff;
+    text-shadow: 0 4px 12px rgba(0,0,0,0.5);
+}
+
+p {
+    font-size: 1.2rem;
+    margin-bottom: 2.5rem;
+    color: #d0f0ff;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.4);
+}
+
+.buttons {
+    display: flex;
+    gap: 20px;
+
+    .btn {
+    position: relative;
+    overflow: hidden;
+    z-index: 0;
+    padding: 14px 30px;
+    border-radius: 16px;
+    font-weight: 600;
+    text-decoration: none;
+    color: #fff;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+    background-size: 600% 600%;
+    animation: liquidGradient 8s ease infinite;
+
+    &.btn-primary {
+        background: linear-gradient(270deg, #00c6ff, #0072ff, #0051a2);
+        &:hover {
+        transform: scale(1.05);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+        }
+    }
+
+    &.btn-secondary {
+        background: linear-gradient(270deg, #0f9437, #0e9620, #0b9e3c);
+        &:hover {
+        transform: scale(1.05);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+        }
+    }
+    }
+}
+}
+
+@keyframes liquidGradient {
+0% { background-position: 0% 50%; }
+50% { background-position: 100% 50%; }
+100% { background-position: 0% 50%; }
+}

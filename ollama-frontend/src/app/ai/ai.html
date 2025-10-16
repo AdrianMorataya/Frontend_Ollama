@@ -1,0 +1,66 @@
+<button class="logout" (click)="logout()">Logout</button>
+
+<div class="ai-page-wrapper">
+<div class="sidebar" [class.show]="sidebarVisible">
+    <h3>Historial</h3>
+    <button class="new-chat" (click)="newChat()">New Chat</button>
+    <ul>
+    <li class="history-item" 
+        *ngFor="let item of history"
+        (click)="loadChat(item)">
+        
+        <span>{{ item.prompt }}</span>
+
+        <button class="menu-btn" (click)="toggleMenu(item, $event)">⋮</button>
+
+        <div class="menu" *ngIf="item.showMenu">
+        <button (click)="toggleDelete(item.id)">Eliminar</button>
+        </div>
+    </li>
+    </ul>
+</div>
+
+<div class="mobile-menu-btn" (click)="sidebarVisible = !sidebarVisible" [class.active]="sidebarVisible">
+<span></span>
+<span></span>
+<span></span>
+</div>
+
+<div class="chat-panel">
+    <h2>OLLAMA AI</h2>
+
+    <div #responsesContainer class="responses">
+    <div *ngFor="let r of responses" class="response" [ngClass]="r.sender">
+        <p *ngFor="let line of r.text">{{ line }}</p>
+    </div>
+    </div>
+
+    <form (ngSubmit)="askQuestion()">
+    <input
+        type="text"
+        [(ngModel)]="prompt"
+        name="prompt"
+        placeholder="Escribí tu pregunta..."
+        required
+        [disabled]="loading"
+    >
+    <button type="submit" [disabled]="loading">Enviar</button>
+    </form>
+
+    <div class="loading-spinner" *ngIf="loading">
+    <div class="spinner"></div>
+    </div>
+
+    <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+</div>
+</div>
+
+<div class="confirm-modal" [class.show]="showConfirm">
+<div class="confirm-box">
+    <p>¿Seguro que quieres eliminar este registro?</p>
+    <div class="buttons">
+    <button class="cancel" (click)="cancelDelete()">Cancelar</button>
+    <button class="confirm" (click)="confirmDelete()">Eliminar</button>
+    </div>
+</div>
+</div>
