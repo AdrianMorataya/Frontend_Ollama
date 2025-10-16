@@ -1,0 +1,38 @@
+<div class="payment-container">
+<h2>Procesar Pago</h2>
+
+<div class="card-info">
+    <label for="cardNumber">Número de Tarjeta</label>
+    <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456">
+
+    <div class="row">
+    <div class="col">
+        <label for="expiry">Vencimiento</label>
+        <input type="text" id="expiry" placeholder="MM/AA">
+    </div>
+    <div class="col">
+        <label for="cvv">CVV</label>
+        <input type="text" id="cvv" placeholder="123">
+    </div>
+    </div>
+
+    <label for="cardName">Nombre en la Tarjeta</label>
+    <input type="text" id="cardName" placeholder="Juan Pérez">
+</div>
+
+<div class="payment-methods">
+    <p>Métodos de Pago Aceptados:</p>
+    <div class="cards">
+    <img src="/assets/visa.svg" alt="Visa" class="logo-visa">
+    <img src="/assets/mastercard.webp" alt="Mastercard" class="logo-mastercard">
+    </div>
+</div>
+
+<div class="amount">
+    <p>Total a Pagar:</p>
+    <h3>USD 1,599</h3>
+</div>
+
+<button class="pay-btn">Pagar Ahora</button>
+<button class="back-btn" (click)="goBack()">Regresar</button>
+</div>

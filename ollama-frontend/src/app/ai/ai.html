@@ -38,8 +38,10 @@
     <form (ngSubmit)="askQuestion()">
     <div class="model-select">
         <label for="model">Modelo:</label>
-        <select id="model" [(ngModel)]="selectedModel" name="model">
-            <option *ngFor="let m of models" [value]="m.value">{{ m.name }}</option>
+        <select id="model" [(ngModel)]="selectedModel" name="model" (change)="onModelChange()">
+            <option *ngFor="let m of models" [value]="m.value">
+                {{ m.name }}
+            </option>
         </select>
     </div>
     <input

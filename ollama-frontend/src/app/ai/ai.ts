@@ -2,6 +2,7 @@ import { Component, AfterViewChecked, ElementRef, ViewChild, OnInit, ViewEncapsu
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 interface PromptHistory {
   id: number;
@@ -9,6 +10,12 @@ interface PromptHistory {
   response: string;
   createdAt: string;
   showMenu?: boolean;
+}
+
+interface Model {
+  name: string;
+  value: string;
+  premium?: boolean;
 }
 
 
@@ -30,18 +37,25 @@ export class AiPage implements AfterViewChecked, OnInit {
   showConfirm = false;
   pendingDeleteId?: number;
   sidebarVisible = false;
-  models = [
-    { name: 'Llama 3', value: 'llama3' },
-    { name: 'Gemma 2', value: 'gemma2:2b' }
+  models: Model[] = [
+    { name: 'Llama 3', value: 'llama3', premium: false },
+      { name: 'Gemma 3', value: 'gemma3:4b', premium: false },
+      { name: 'Code Llama 🔒', value: 'codellama:13b', premium: true }
   ]
 
   selectedModel = this.models[0].value;
 
+  onModelChange() {
+    const model = this.models.find(m => m.value === this.selectedModel);
+    if (model?.premium) {
+      this.router.navigate(['/payment']);
+    }
+  }
 
   private apiUrl = 'http://localhost:5024/api/ollama';
   @ViewChild('responsesContainer') private responsesContainer!: ElementRef;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
   ngOnInit() {
     this.loadHistory();
