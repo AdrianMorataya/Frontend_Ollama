@@ -30,6 +30,12 @@ export class AiPage implements AfterViewChecked, OnInit {
   showConfirm = false;
   pendingDeleteId?: number;
   sidebarVisible = false;
+  models = [
+    { name: 'Llama 3', value: 'llama3' },
+    { name: 'Gemma 2', value: 'gemma2:2b' }
+  ]
+
+  selectedModel = this.models[0].value;
 
 
   private apiUrl = 'http://localhost:5024/api/ollama';
@@ -63,32 +69,49 @@ export class AiPage implements AfterViewChecked, OnInit {
   }
 
   askQuestion() {
-    if (!this.prompt.trim()) return;
-    this.loading = true;
-    const token = localStorage.getItem('token') || '';
-    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+  if (!this.prompt.trim()) return;
+  this.loading = true;
+  const token = localStorage.getItem('token') || '';
+  const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
-    this.responses.push({ text: this.prompt.split('\n'), sender: 'user' });
+  this.responses.push({ text: this.prompt.split('\n'), sender: 'user' });
 
-    this.http.post<{ response: string }>(`${this.apiUrl}/ask`, { prompt: this.prompt }, { headers })
-      .subscribe({
-        next: res => {
-          this.responses.push({ text: res.response.split('\n'), sender: 'ai' });
-          this.prompt = '';
-          this.loading = false;
-          this.loadHistory();
-        },
-        error: err => {
-          this.errorMessage = err.error || 'Error al consultar la IA';
-          this.loading = false;
-        }
-      });
-  }
+  let fullPrompt = this.prompt;
+
+if (this.responses.length > 0) {
+  const historyContext = this.responses
+    .map(r => `${r.sender === 'user' ? 'Usuario' : 'AI'}: ${r.text.join('\n')}`)
+    .join('\n');
+
+  fullPrompt = historyContext + `\nUsuario: ${this.prompt}\nAI:`;
+}
+
+
+  this.http.post<{ response: string }>(
+    `${this.apiUrl}/ask`,
+    { prompt: fullPrompt, model: this.selectedModel },
+    { headers }
+  )
+  .subscribe({
+    next: res => {
+      this.responses.push({ text: res.response.split('\n'), sender: 'ai' });
+      this.prompt = '';
+      this.loading = false;
+      this.loadHistory();
+    },
+    error: err => {
+      this.errorMessage = err.error || 'Error al consultar la IA';
+      this.loading = false;
+    }
+  });
+}
+
 
   newChat() {
-    this.responses = [];
-    this.selectedChat = undefined;
-  }
+  this.responses = [];
+  this.selectedChat = undefined;
+}
+
 
   logout() {
     localStorage.removeItem('token');

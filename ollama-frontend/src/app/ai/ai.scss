@@ -4,7 +4,7 @@ display: flex;
 justify-content: center;
 align-items: flex-start;
 padding: 2rem;
-background: linear-gradient(135deg, #4b6cb7, #182848);
+background: linear-gradient(135deg, #747eb4, #09152e);
 font-family: 'Poppins', sans-serif;
 color: #fff;
 gap: 1.5rem;
@@ -15,7 +15,7 @@ display: flex;
 flex-direction: column;
 width: 200px;
 height: 80vh;
-background: rgba(255,255,255,0.05);
+background: linear-gradient(135deg, #304575, #182848);
 backdrop-filter: blur(18px);
 border-radius: 20px;
 padding: 1.2rem;
@@ -118,7 +118,7 @@ display: flex;
 flex-direction: column;
 padding: 2rem;
 border-radius: 20px;
-background: rgba(20,40,60,0.85);
+background: linear-gradient(135deg, #3f578b, #182848);
 color: #f0f0f0;
 backdrop-filter: blur(15px);
 box-shadow: 0 10px 30px rgba(0,0,0,0.25);
@@ -318,7 +318,7 @@ text-align: center;
 transition: all 0.25s ease;
 box-shadow: 0 6px 18px rgba(0,0,0,0.3);
 overflow: hidden;
-background: linear-gradient(270deg, #ff512f, #dd2476, #ff416c);
+background: linear-gradient(270deg, #ff512f, #dd2424, #ff4141);
 background-size: 600% 600%;
 animation: liquidGradient 8s ease infinite;
 
@@ -519,5 +519,46 @@ z-index: 999;
 
   @media (max-width: 900px) {
     display: flex;
+  }
+}
+
+.model-select {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.8rem;
+
+  label {
+    font-weight: 600;
+    color: #ffffff;
+  }
+
+  select {
+    padding: 0.6rem 1rem;
+    border-radius: 14px;
+    border: none;
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    backdrop-filter: blur(6px);
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: all 0.25s ease;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'><path fill='white' d='M7 10l5 5 5-5z'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 0.8rem center;
+    background-size: 12px 12px;
+
+    &:focus {
+      background: rgba(255,255,255,0.25);
+      transform: scale(1.02);
+      outline: none;
+    }
+
+    option {
+      background: rgba(20,40,60,0.95);
+      color: #fff;
+    }
   }
 }

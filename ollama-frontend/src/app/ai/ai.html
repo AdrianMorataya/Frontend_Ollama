@@ -36,11 +36,17 @@
     </div>
 
     <form (ngSubmit)="askQuestion()">
+    <div class="model-select">
+        <label for="model">Modelo:</label>
+        <select id="model" [(ngModel)]="selectedModel" name="model">
+            <option *ngFor="let m of models" [value]="m.value">{{ m.name }}</option>
+        </select>
+    </div>
     <input
         type="text"
         [(ngModel)]="prompt"
         name="prompt"
-        placeholder="Escribí tu pregunta..."
+        placeholder="Escribe tu pregunta..."
         required
         [disabled]="loading"
     >
