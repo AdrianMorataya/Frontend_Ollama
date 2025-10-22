@@ -18,10 +18,17 @@ export class Register {
   role = 'User';
   errorMessage = '';
   successMessage = '';
+  showPassword = false;
 
   constructor(private authService: AuthService, private router: Router) {}
 
+  loading = false;
+
   register() {
+    this.errorMessage = '';
+    this.successMessage = '';
+    this.loading = true;
+
     const user = {
       username: this.username,
       email: this.email,
@@ -30,8 +37,22 @@ export class Register {
     };
 
     this.authService.register(user).subscribe({
-      next: () => this.router.navigate(['/auth/login']),
-      error: err => this.errorMessage = err.error || 'Error al registrarse'
+      next: () => {
+        this.successMessage = 'Usuario registrado correctamente';
+        setTimeout(() => this.router.navigate(['/auth/verify-email'], { queryParams: { email: this.email } }), 0);
+        this.loading = false;
+      },
+      error: err => {
+        if (err.error && typeof err.error === 'string') {
+          this.errorMessage = err.error;
+        } else if (err.error && err.error.message) {
+          this.errorMessage = err.error.message;
+        } else {
+          this.errorMessage = 'Error al registrarse';
+        }
+        this.loading = false;
+      }
     });
   }
+
 }

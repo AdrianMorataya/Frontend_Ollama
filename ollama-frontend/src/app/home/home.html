@@ -5,5 +5,13 @@
 <div class="buttons">
     <a routerLink="/auth/login" class="btn btn-primary">Login</a>
     <a routerLink="/auth/register" class="btn btn-secondary">Register</a>
+    <a 
+routerLink="/auth/verify-email" 
+[queryParams]="{ fromHome: true, email: ' ' }"
+class="btn btn-third"
+>
+Verificar
+</a>
+
 </div>
 </div>

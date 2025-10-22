@@ -1,0 +1,48 @@
+<button class="home-btn" [routerLink]="['/']">
+    Home
+</button>
+
+<div class="verify-container">
+<h2>Verificar Correo</h2>
+
+<form (ngSubmit)="verify()">
+    <div class="email-input" *ngIf="showEmailInput">
+    <label for="email">Correo electrónico</label>
+    <input
+        type="email"
+        id="email"
+        name="email"
+        [(ngModel)]="email"
+        [readonly]="isReadonly"
+        required
+        placeholder="ejemplo@correo.com"
+    />
+    </div>
+
+
+    <div class="code-inputs">
+    <label>Código de verificación</label>
+    <div class="digits">
+        <input
+        *ngFor="let digit of codeDigits; let i = index; trackBy: trackByIndex"
+        type="text"
+        maxlength="1"
+        [value]="digit"
+        name="digit{{i}}"
+        (input)="onDigitInput($event, i)"
+        [disabled]="loading"
+        />
+    </div>
+    </div>
+
+    <button type="submit" [disabled]="loading">
+    <ng-container *ngIf="!loading; else loadingTpl">Verificar</ng-container>
+    <ng-template #loadingTpl>
+        <span class="checkmark">&#10003;</span>
+    </ng-template>
+    </button>
+</form>
+
+<p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+<p class="success" *ngIf="successMessage">{{ successMessage }}</p>
+</div>

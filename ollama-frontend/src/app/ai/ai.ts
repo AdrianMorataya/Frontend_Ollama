@@ -47,6 +47,99 @@ export class AiPage implements AfterViewChecked, OnInit {
 
   selectedModel = this.models[0].value;
 
+  themes = [
+  { name: 'azul', preview: 'linear-gradient(135deg, #4b6cb7, #182848)', colors: ['#4b6cb7', '#182848'] },
+  { name: 'dark mode', preview: 'linear-gradient(135deg, #313131ff, #1a1a1aff)', colors: ['#3a3a3aff', '#1d1d1dff'] },
+  { name: 'morado', preview: 'linear-gradient(135deg, #8e2de2, #4a00e0)', colors: ['#8e2de2', '#31015eff'] },
+  { name: 'cromo', preview: 'linear-gradient(135deg, #ff512f, #dd2476)', colors: ['#bb0da4ff', '#8b174bff'] },
+  { name: 'light mode', preview: 'linear-gradient(135deg, #8d8d8dff, #888888ff)', colors: ['#727272ff', '#727272ff'] },
+  { name: 'personalizado', preview: 'linear-gradient(135deg, #ff0000ff, #ffd900ff, #00ff40ff, #0066ffff, #ff00f2ff)', colors: ['#ffffff', '#000000'] },
+];
+
+customColor1: string = '#ffffff';
+customColor2: string = '#000000';
+
+selectedTheme = 'azul';
+
+showThemes = false;
+
+toggleThemes() {
+  this.showThemes = !this.showThemes;
+}
+
+changeTheme(theme: any) {
+  const root = document.documentElement;
+
+  const oldColor1 = this.parseColor(getComputedStyle(root).getPropertyValue('--color1').trim());
+  const oldColor2 = this.parseColor(getComputedStyle(root).getPropertyValue('--color2').trim());
+
+  let newColor1: number[], newColor2: number[];
+
+  if (theme.name === 'personalizado') {
+    newColor1 = this.parseColor(this.customColor1);
+    newColor2 = this.parseColor(this.customColor2);
+  } else {
+    newColor1 = this.parseColor(theme.colors[0]);
+    newColor2 = this.parseColor(theme.colors[1]);
+  }
+
+  const duration = 800;
+  let start = performance.now();
+
+  const step = (timestamp: number) => {
+    const t = Math.min((timestamp - start) / duration, 1);
+
+    const color1 = this.rgbToString(this.interpolateRGB(oldColor1, newColor1, t));
+    const color2 = this.rgbToString(this.interpolateRGB(oldColor2, newColor2, t));
+
+    root.style.setProperty('--color1', color1);
+    root.style.setProperty('--color2', color2);
+
+    if (t < 1) requestAnimationFrame(step);
+  };
+
+  requestAnimationFrame(step);
+
+  this.selectedTheme = theme.name;
+  localStorage.setItem('selectedTheme', this.selectedTheme);
+  if (theme.name === 'personalizado') {
+    localStorage.setItem('customColor1', this.customColor1);
+    localStorage.setItem('customColor2', this.customColor2);
+  }
+}
+
+parseColor(color: string): number[] {
+  color = color.replace(/\s+/g,'');
+  if (color.startsWith('#')) {
+    return [
+      parseInt(color.slice(1,3),16),
+      parseInt(color.slice(3,5),16),
+      parseInt(color.slice(5,7),16)
+    ];
+  } else if (color.startsWith('rgb')) {
+    const nums = color.match(/\d+/g)!.map(Number);
+    return nums;
+  } else return [255,255,255];
+}
+
+interpolateRGB(a: number[], b: number[], t: number): number[] {
+  return a.map((v,i) => Math.round(v + (b[i]-v)*t));
+}
+
+rgbToString(rgb: number[]): string {
+  return `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`;
+}
+
+
+updateCustomTheme() {
+  document.documentElement.style.setProperty('--color1', this.customColor1);
+  document.documentElement.style.setProperty('--color2', this.customColor2);
+
+  localStorage.setItem('customColor1', this.customColor1);
+  localStorage.setItem('customColor2', this.customColor2);
+  localStorage.setItem('selectedTheme', 'personalizado');
+}
+
   onModelChange() {
     const model = this.models.find(m => m.value === this.selectedModel);
     if (model?.premium) {
@@ -59,9 +152,35 @@ export class AiPage implements AfterViewChecked, OnInit {
 
   constructor(private http: HttpClient, private router: Router) {}
 
-  ngOnInit() {
-    this.loadHistory();
+ngOnInit() {
+  this.loadHistory();
+
+  const savedTheme = localStorage.getItem('selectedTheme');
+  if (savedTheme) {
+    this.selectedTheme = savedTheme;
+
+    if (savedTheme === 'personalizado') {
+      this.customColor1 = localStorage.getItem('customColor1') || '#ffffff';
+      this.customColor2 = localStorage.getItem('customColor2') || '#000000';
+      document.documentElement.style.setProperty('--color1', this.customColor1);
+      document.documentElement.style.setProperty('--color2', this.customColor2);
+    } else {
+      const theme = this.themes.find(t => t.name === savedTheme);
+      if (theme) {
+        document.documentElement.style.setProperty('--color1', theme.colors[0]);
+        document.documentElement.style.setProperty('--color2', theme.colors[1]);
+      }
+    }
+  } else {
+    const defaultTheme = this.themes.find(t => t.name === this.selectedTheme);
+    if (defaultTheme) {
+      document.documentElement.style.setProperty('--color1', defaultTheme.colors[0]);
+      document.documentElement.style.setProperty('--color2', defaultTheme.colors[1]);
+    }
   }
+}
+
+
 
   loadHistory() {
     const token = localStorage.getItem('token') || '';
@@ -171,11 +290,27 @@ if (this.responses.length > 0) {
   this.selectedChat = undefined;
 }
 
+showLogoutAnimation = false;
+showConfirmModal = false;
 
-  logout() {
+confirmLogout() {
+  this.showConfirmModal = true;
+}
+
+cancelLogout() {
+  this.showConfirmModal = false;
+}
+
+logout() {
+  this.showConfirmModal = false;
+  this.showLogoutAnimation = true;
+
+  setTimeout(() => {
     localStorage.removeItem('token');
     window.location.href = '/login';
-  }
+  }, 1000);
+}
+
 
   ngAfterViewChecked() { this.scrollToBottom(); }
 
@@ -243,3 +378,4 @@ removeImage() {
 }
 
 }
+

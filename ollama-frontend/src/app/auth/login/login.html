@@ -1,9 +1,14 @@
+<button class="home-btn" [routerLink]="['/']">
+    Home
+</button>
+
 <div class="login-container">
+    
 <h2>Iniciar Sesión</h2>
 
 <form (ngSubmit)="login()">
     <div>
-    <label>Email</label>
+    <label>Email / Username</label>
     <input type="email" [(ngModel)]="usernameOrEmail" name="usernameOrEmail" required placeholder="Tu correo" />
     </div>
 
@@ -27,6 +32,16 @@
 </form>
 
 <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+<button 
+class="verify-email-btn"
+[routerLink]="['/auth/verify-email']" 
+[queryParams]="{ fromLogin: true, email: usernameOrEmail }">
+Verificar correo
+</button>
+
+<p>¿No tienes una cuenta? 
+    <a routerLink="/auth/register">Regístrate</a>
 
 <div class="success-check" *ngIf="success">
     <svg viewBox="0 0 70 70">

@@ -34,4 +34,8 @@ login(data: LoginRequest): Observable<LoginResponse> {
 register(data: RegisterRequest): Observable<any> {
     return this.http.post(`${this.baseUrl}/register`, data);
 }
+
+verifyEmail(email: string, code: string) {
+  return this.http.post(`${this.baseUrl}/verify-email`, { email, code });
+}
 }

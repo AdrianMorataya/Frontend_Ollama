@@ -1,4 +1,4 @@
-.register-container {
+.verify-container {
 max-width: 400px;
 margin: 5rem auto;
 padding: 2.5rem;
@@ -7,7 +7,6 @@ background: rgba(15, 32, 39, 0.85);
 backdrop-filter: blur(15px);
 box-shadow: 0 10px 30px rgba(0,0,0,0.4);
 text-align: center;
-position: relative;
 
 h2 {
     margin-bottom: 1.5rem;
@@ -32,7 +31,7 @@ form {
         color: #d0f0ff;
     }
 
-    input, select {
+    input {
         width: 100%;
         padding: 0.65rem 0.9rem;
         border-radius: 14px;
@@ -44,9 +43,7 @@ form {
         transition: all 0.25s ease;
         outline: none;
 
-        &::placeholder {
-        color: rgba(255,255,255,0.5);
-        }
+        &::placeholder { color: rgba(255,255,255,0.5); }
 
         &:focus {
         background: rgba(0,0,0,0.35);
@@ -70,10 +67,12 @@ form {
     transition: all 0.3s ease;
     box-shadow: 0 6px 18px rgba(0,0,0,0.4);
     position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
     &:hover {
         transform: scale(1.05);
-        box-shadow: 0 8px 25px rgba(0,0,0,0.5);
     }
 
     &:disabled {
@@ -82,40 +81,15 @@ form {
     }
 
     .checkmark {
-        display: inline-block;
-        font-size: 1.2rem;
+        font-size: 1.5rem;
         color: #00ffdd;
         animation: pop 0.5s ease forwards;
-        vertical-align: middle;
     }
     }
 }
 
-.error, .success {
-    margin-top: 1rem;
-    text-align: center;
-    font-weight: 600;
-}
-
-.error { color: #ff6b6b; }
-.success { color: #00ffdd; }
-
-p {
-    margin-top: 1.5rem;
-    color: #d0f0ff;
-
-    a {
-    color: #00f5ff;
-    font-weight: 600;
-    text-decoration: underline;
-    position: relative;
-    z-index: 1;
-
-    &:hover {
-        color: #00cfff;
-    }
-    }
-}
+.error { color: #ff6b6b; margin-top: 1rem; }
+.success { color: #00ffdd; margin-top: 1rem; }
 }
 
 @keyframes liquidGradient {
@@ -130,24 +104,38 @@ p {
 100% { transform: scale(1); }
 }
 
-.password-wrapper {
-position: relative;
+.code-inputs {
+margin: 1rem 0;
 
-input {
-    width: 100%;
-    padding-right: 2.5rem;
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #d0f0ff;
+    font-weight: 600;
 }
 
-.toggle-password {
-    position: absolute;
-    right: 0.75rem;
-    top: 50%;
-    transform: translateY(-50%);
-    cursor: pointer;
-    color: #fff;
+.digits {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
 
-    i {
-    font-size: 1.2rem;
+    input {
+    width: 3rem;
+    height: 3rem;
+    text-align: center;
+    font-size: 1.5rem;
+    border-radius: 10px;
+    border: none;
+    background: rgba(0,0,0,0.25);
+    color: #f0f0f0;
+    backdrop-filter: blur(6px);
+    transition: all 0.25s ease;
+    outline: none;
+
+    &:focus {
+        background: rgba(0,0,0,0.35);
+        transform: scale(1.05);
+    }
     }
 }
 }

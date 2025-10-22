@@ -1,4 +1,20 @@
-<button class="logout" (click)="logout()">Logout</button>
+<button (click)="confirmLogout()" class="logout">Logout</button>
+
+<div class="confirm-modal" [class.show]="showConfirmModal">
+<div class="confirm-box">
+    <p>¿Estás seguro que quieres salir?</p>
+    <div class="buttons">
+    <button class="cancel" (click)="cancelLogout()">No</button>
+    <button class="confirm" (click)="logout()">Sí</button>
+    </div>
+</div>
+</div>
+
+<div class="logout-animation" *ngIf="showLogoutAnimation">
+<div class="spinner"></div>
+<p>Saliendo...</p>
+</div>
+
 
 <div class="ai-page-wrapper">
 <div class="sidebar" [class.show]="sidebarVisible">
@@ -70,6 +86,31 @@
     </div>
 
     <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+    <div class="theme-selector">
+    <button class="theme-button" (click)="toggleThemes()">🎨 Personalizar</button>
+
+    <div class="themes-dropdown" *ngIf="showThemes">
+        <div 
+        class="theme-option" 
+        *ngFor="let theme of themes"
+        [style.background]="theme.preview"
+        (click)="changeTheme(theme)"
+        [class.selected]="selectedTheme === theme.name"
+        >
+        {{ theme.name | titlecase }}
+        </div>
+
+        <div *ngIf="selectedTheme === 'personalizado'" class="custom-colors">
+        <label>Color 1:</label>
+        <input type="color" [(ngModel)]="customColor1" (change)="updateCustomTheme()">
+
+        <label>Color 2:</label>
+        <input type="color" [(ngModel)]="customColor2" (change)="updateCustomTheme()">
+        </div>
+    </div>
+    </div>
+
 </div>
 </div>
 

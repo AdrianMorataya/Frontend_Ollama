@@ -60,6 +60,14 @@ p {
         box-shadow: 0 8px 25px rgba(0,0,0,0.5);
         }
     }
+
+    &.btn-third {
+        background: linear-gradient(270deg, #790f94, #c609df, #9e0b9e);
+        &:hover {
+        transform: scale(1.05);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+        }
+    }
     }
 }
 }
