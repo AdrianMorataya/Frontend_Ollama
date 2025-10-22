@@ -15,6 +15,7 @@ export class Login {
   usernameOrEmail = '';
   password = '';
   errorMessage = '';
+  showPassword: boolean = false;
   success = false;
 
   constructor(private authService: AuthService, private router: Router) {}

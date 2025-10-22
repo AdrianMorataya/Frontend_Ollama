@@ -34,12 +34,14 @@ export class AiPage implements AfterViewChecked, OnInit {
   selectedChat?: PromptHistory;
   loading = false;
   errorMessage = '';
+  selectedImageFile: File | null = null;
+  selectedImagePreview: string | ArrayBuffer | null = null;
   showConfirm = false;
   pendingDeleteId?: number;
   sidebarVisible = false;
   models: Model[] = [
     { name: 'Llama 3', value: 'llama3', premium: false },
-      { name: 'Gemma 3', value: 'gemma3:4b', premium: false },
+      { name: 'Gemma 3', value: 'gemma3', premium: false },
       { name: 'Code Llama 🔒', value: 'codellama:13b', premium: true }
   ]
 
@@ -82,8 +84,50 @@ export class AiPage implements AfterViewChecked, OnInit {
     ];
   }
 
+  askVision() {
+  if (!this.prompt.trim() || !this.selectedImageFile) return;
+
+  this.loading = true;
+  const token = localStorage.getItem('token') || '';
+  const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+
+  this.responses.push({ 
+    text: [this.prompt.split('\n').join(' '), '(Imagen Adjunta)'], 
+    sender: 'user' 
+  });
+
+  const formData = new FormData();
+  formData.append('prompt', this.prompt);
+  formData.append('image', this.selectedImageFile, this.selectedImageFile.name);
+  formData.append('model', this.selectedModel);
+
+
+  this.http.post<{ response: string }>(
+    `${this.apiUrl}/ask-vision`,
+    formData,
+    { headers }
+  )
+  .subscribe({
+    next: res => {
+      this.responses.push({ text: res.response.split('\n'), sender: 'ai' });
+      this.prompt = '';
+      this.loading = false;
+      this.removeImage();
+      this.loadHistory();
+    },
+    error: err => {
+      this.errorMessage = err.error?.response || 'Error al consultar la IA de visión';
+      this.loading = false;
+    }
+  });
+}
+
   askQuestion() {
   if (!this.prompt.trim()) return;
+  if (this.selectedImageFile && this.selectedModel.includes('gemma3')) {
+      this.askVision();
+      return;
+  }
   this.loading = true;
   const token = localStorage.getItem('token') || '';
   const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
@@ -114,11 +158,12 @@ if (this.responses.length > 0) {
       this.loadHistory();
     },
     error: err => {
-      this.errorMessage = err.error || 'Error al consultar la IA';
+      this.errorMessage = err.error?.response || 'Error al consultar la IA';
       this.loading = false;
     }
   });
 }
+
 
 
   newChat() {
@@ -176,4 +221,25 @@ confirmDelete() {
       }
     });
 }
+
+onFileSelected(event: any) {
+  const file: File = event.target.files[0];
+  if (file) {
+    this.selectedImageFile = file;
+    
+    const reader = new FileReader();
+    reader.onload = e => {
+      this.selectedImagePreview = reader.result;
+    };
+    reader.readAsDataURL(file);
+  } else {
+    this.removeImage();
+  }
+}
+
+removeImage() {
+  this.selectedImageFile = null;
+  this.selectedImagePreview = null;
+}
+
 }

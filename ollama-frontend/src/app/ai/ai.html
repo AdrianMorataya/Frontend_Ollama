@@ -3,16 +3,13 @@
 <div class="ai-page-wrapper">
 <div class="sidebar" [class.show]="sidebarVisible">
     <h3>Historial</h3>
-    <button class="new-chat" (click)="newChat()">New Chat</button>
+    <button class="new-chat" (click)="newChat()">+ Nuevo Chat</button>
     <ul>
     <li class="history-item" 
         *ngFor="let item of history"
         (click)="loadChat(item)">
-        
         <span>{{ item.prompt }}</span>
-
         <button class="menu-btn" (click)="toggleMenu(item, $event)">⋮</button>
-
         <div class="menu" *ngIf="item.showMenu">
         <button (click)="toggleDelete(item.id)">Eliminar</button>
         </div>
@@ -21,9 +18,9 @@
 </div>
 
 <div class="mobile-menu-btn" (click)="sidebarVisible = !sidebarVisible" [class.active]="sidebarVisible">
-<span></span>
-<span></span>
-<span></span>
+    <span></span>
+    <span></span>
+    <span></span>
 </div>
 
 <div class="chat-panel">
@@ -35,24 +32,37 @@
     </div>
     </div>
 
-    <form (ngSubmit)="askQuestion()">
+    <div *ngIf="selectedImagePreview" class="image-preview-container">
+    <img [src]="selectedImagePreview" alt="Previsualización" class="image-preview" />
+    <button (click)="removeImage()" class="remove-image-button" [disabled]="loading">&times;</button>
+    </div>
+
+    <input type="file" #fileInput (change)="onFileSelected($event)" accept="image/*" style="display:none;" id="imageUpload">
+
+    <form (ngSubmit)="askQuestion()" class="chat-form">
     <div class="model-select">
         <label for="model">Modelo:</label>
-        <select id="model" [(ngModel)]="selectedModel" name="model" (change)="onModelChange()">
-            <option *ngFor="let m of models" [value]="m.value">
-                {{ m.name }}
-            </option>
+        <select id="model" [(ngModel)]="selectedModel" name="model" (change)="onModelChange()" [disabled]="loading">
+        <option *ngFor="let m of models" [value]="m.value">{{ m.name }}</option>
         </select>
     </div>
-    <input
-        type="text"
-        [(ngModel)]="prompt"
-        name="prompt"
-        placeholder="Escribe tu pregunta..."
-        required
+
+    <div class="input-group">
+        <button 
+        *ngIf="selectedModel.includes('gemma3')"
+        type="button" 
+        class="attach-button"
+        [ngClass]="{'attached': selectedImageFile}"
+        (click)="fileInput.click()"
         [disabled]="loading"
-    >
-    <button type="submit" [disabled]="loading">Enviar</button>
+        >
+        <span *ngIf="!selectedImageFile">📎</span>
+        <span *ngIf="selectedImageFile">🖼️</span>
+        </button>
+
+        <input type="text" [(ngModel)]="prompt" name="prompt" placeholder="Escribe tu pregunta..." required [disabled]="loading">
+        <button type="submit" [disabled]="loading">Enviar</button>
+    </div>
     </form>
 
     <div class="loading-spinner" *ngIf="loading">

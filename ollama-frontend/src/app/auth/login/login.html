@@ -9,7 +9,18 @@
 
     <div>
     <label>Contraseña</label>
-    <input type="password" [(ngModel)]="password" name="password" required placeholder="Tu contraseña" />
+    <div class="password-wrapper">
+        <input 
+        [type]="showPassword ? 'text' : 'password'" 
+        [(ngModel)]="password" 
+        name="password" 
+        required 
+        placeholder="Tu contraseña" 
+        />
+        <span class="toggle-password" (click)="showPassword = !showPassword">
+        <i class="material-icons">{{ showPassword ? 'visibility_off' : 'visibility' }}</i>
+        </span>
+    </div>
     </div>
 
     <button type="submit">Ingresar</button>
